@@ -127,11 +127,23 @@ export class PublishService {
   });
 
   saveGithubInfo(githubInfo: Partial<Github>) {
-    const githubInfo_ = omit(githubInfo, ['token']);
+    // Check if this.githubInfo.value exists
+    if (this.githubInfo.value) {
+        // Omit the 'token' property from the provided githubInfo
+        const githubInfo_ = omit(githubInfo, ['token']);
 
-    Object.assign(this.githubInfo.value, githubInfo_);
-    this.pluginDataRepository.saveGithubInfo(omit(toRaw(this.githubInfo.value), ['token']));
-    this.initGithubClient();
+        // Update the existing githubInfo with the new values
+        Object.assign(this.githubInfo.value, githubInfo_);
+
+        // Save the updated githubInfo to the repository (excluding 'token')
+        this.pluginDataRepository.saveGithubInfo(omit(this.githubInfo.value, ['token']));
+
+        // Reinitialize the Github client with the updated information
+        this.initGithubClient();
+    } else {
+        // Handle the case where this.githubInfo.value is null
+        console.error('this.githubInfo.value is null');
+    }
   }
 
   async generateSite() {
