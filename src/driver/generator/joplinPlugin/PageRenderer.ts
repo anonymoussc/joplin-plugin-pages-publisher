@@ -36,6 +36,7 @@ import {
   getOutputThemeAssetsDir,
   getOutputNoJekyll,
 } from './pathHelper';
+import path from 'path';
 
 ejs.fileLoader = fs.readFileSync;
 
@@ -362,7 +363,7 @@ export class PageRenderer {
     await fs.copy(this.themeDir, this.outputDir, {
       filter: (src, dest) =>
         dest === this.outputDir ||
-        dest.startsWith(outputAssetsDir) ||
+        path.resolve(dest).startsWith(path.resolve(outputAssetsDir)) ||
         (src.endsWith('.json') && !src.endsWith('config.json')),
     });
   }
